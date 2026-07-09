@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Deep Link PoC</title>
+<style>
+  body { font-family: sans-serif; padding: 40px; }
+  a.btn {
+    display: inline-block;
+    padding: 14px 24px;
+    background: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 16px;
+  }
+</style>
+</head>
+<body>
+  <h3>Coupang Eats Merchant Deep Link PoC</h3>
+  <p>아래 버튼을 누르면 딥링크가 트리거됩니다.</p>
+
+  <a class="btn" href="coupangeatsmerchant://Web?url=https://jun2e0.github.io/c-corp/login/kr">
+    딥링크 실행
+  </a>
+
+  <p style="margin-top:20px; color:#666; font-size:13px;">
+    target: coupangeatsmerchant://Web?url=https://jun2e0.github.io/c-corp/login/kr
+  </p>
+</body>
+</html>
