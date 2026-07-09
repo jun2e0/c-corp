@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>Camera Permission PoC</title>
+<style>
+  body { font-family: sans-serif; padding: 30px; }
+  video { width: 320px; height: 240px; background: #000; margin-top: 15px; }
+  #log { margin-top: 15px; font-size: 13px; color: #444; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+  <h3>getUserMedia Permission Test</h3>
+  <p>페이지 로드 시 자동으로 카메라 접근을 요청합니다.</p>
+  <video id="preview" autoplay playsinline muted></video>
+  <div id="log">대기 중...</div>
+
+  <script>
+    const logEl = document.getElementById('log');
+    function log(msg) {
+      logEl.textContent += "\n" + msg;
+      console.log(msg);
+    }
+
+    window.addEventListener('load', function() {
+      log("getUserMedia 호출 시도...");
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function(stream) {
+          log("성공: 카메라 스트림 획득됨 (프롬프트 없이 승인됨 가능성)");
+          document.getElementById('preview').srcObject = stream;
+        })
+        .catch(function(err) {
+          log("실패: " + err.name + " - " + err.message);
+        });
+    });
+  </script>
+</body>
+</html>
