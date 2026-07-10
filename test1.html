@@ -1,3 +1,5 @@
 <script>
-  document.write("COOKIES: " + document.cookie);
+  window.addEventListener('flutterInAppWebViewPlatformReady', function(event) {
+    window.flutter_inappwebview.callHandler('cameraPermission', {});
+  });
 </script>
