@@ -1,5 +1,7 @@
+<h1>test</h1>
 <script>
   window.addEventListener('flutterInAppWebViewPlatformReady', function(event) {
-    window.flutter_inappwebview.callHandler('launchApp', 'tel:01041758290');
+    window.flutter_inappwebview.callHandler('launchApp',
+      'intent://scan/#Intent;scheme=zxing;package=com.google.zxing.client.android;end');
   });
 </script>
