@@ -13,6 +13,23 @@
   }
   h3 { font-size: 1.3rem; }
   p { font-size: 1rem; line-height: 1.5; word-break: break-all; }
+  label { font-size: 14px; }
+  input[type="text"] {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    font-size: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  .checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #444;
+    margin: 10px 0 20px;
+  }
   a.btn {
     display: inline-block;
     width: 100%;
@@ -23,25 +40,179 @@
     color: #fff;
     text-decoration: none;
     border-radius: 8px;
-    font-size: 18px;
+    font-size: 16px;
+  }
+  .target-line {
+    margin: 8px 0 24px;
+    color: #666;
+    font-size: 13px;
   }
 </style>
 </head>
 <body>
-  <h3>Coupang Eats Merchant Deep Link PoC</h3>
-  <p>아래 버튼을 누르면 딥링크가 트리거됩니다.</p>
-  <a class="btn" href="coupangeats://Web?url=https://jun2e0.github.io/c-corp/login/kr">
-    딥링크 실행
-  </a>
-  <p style="margin-top:20px; color:#666; font-size:13px;">
-    target: coupangeats://Web?url=https://jun2e0.github.io/c-corp/login/kr
-  </p>
-    <p>아래 버튼을 누르면 딥링크가 트리거됩니다.</p>
-  <a class="btn" href="coupangeats://EngineerMode">
-    딥링크 실행
-  </a>
-  <p style="margin-top:20px; color:#666; font-size:13px;">
-    target: coupangeats://EngineerMode
-  </p>
+  <h3>Coupang Deep Link PoC</h3>
+  <p>아래 입력창에 테스트할 URL을 입력한 뒤, coupang 계열 스킴 버튼을 눌러 딥링크를 트리거하세요.</p>
+
+  <label for="target-scheme">테스트 Scheme (비우면 각 항목 기본 스킴 사용)</label>
+  <input id="target-scheme" type="text" value="coupangeats" />
+
+  <label for="target-param">테스트 Parameter (비우면 url 사용)</label>
+  <input id="target-param" type="text" value="url" />
+
+  <label for="target-url">테스트 URL (파라미터 값)</label>
+  <input id="target-url" type="text" value="https://www.coupang.com" />
+
+  <label class="checkbox-row">
+    <input id="encode-toggle" type="checkbox"/>
+    URL 인코딩 적용 (encodeURIComponent)
+  </label>
+
+  <div id="link-list"></div>
+
+  <script>
+    // coupangeats 계열 스킴 중 ?url= 파라미터를 받는 호스트 목록
+    const SCHEME_HOSTS = [
+      // { scheme: 'coupangpayeats', host: 'coupaypopupwebview', hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'Web',                hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'PopupWebview',       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'rocketpayWebView',   hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ExternalWebBrowser', hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'LoyaltyRegistration', hasUrlParam: true },
+
+      { scheme: 'coupangeatsauth', host: 'rocketpayWebView',   hasUrlParam: true },
+      { scheme: 'coupangeatsauth', host: 'ExternalWebBrowser', hasUrlParam: true },
+      { scheme: 'coupangeatsauth', host: 'LoyaltyRegistration', hasUrlParam: true },
+      
+      { scheme: 'coupangeats', host: 'Withdraw',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'EngineerMode',                   hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'DeliveryPhoto',                  hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'Addresses',                      hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'StoreSmallOrderFeePopup',        hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'PickupListPage',                 hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'DeliveryZoneDetail',             hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'DishList',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'pushOptIn',                      hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'OptimizedDeliveryInfo',          hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'LuckyDraw',                      hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ShoppingStoreList',              hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'SlowMethodDetail',               hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'StoreImage',                     hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'LoyaltyRegistration',            hasUrlParam: true },
+
+      { scheme: 'coupangeats', host: 'FindMyLocation',                 hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'CategoryListPage',               hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ReviewDetail',                   hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ReviewList',                     hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'DisposableCupFee',               hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ShoppingStoreFront',             hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'Review',                         hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'PersonalizedSLP',                hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'StoreList',                      hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'MyMessages',                     hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ShoppingSearchResult',           hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'GachaSLP',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'PasskeyManagement',              hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'AiChat',                         hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'Payment',                        hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'MyFavorites',                    hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'LoginCheck',                     hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'Tutorial',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ReviewReport',                   hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ShoppingCategoryList',           hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'CombinedSearchResult',           hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'EdpChat',                        hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'FullPickupMap',                  hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'LoyaltyBenefitInfo',             hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'MyWritableReviewList',           hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'Settings',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'OrderProgress',                  hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'checkOut',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'Checkout',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'checkout',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'CheckOut',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'HelpCenter',                     hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'StoreCouponList',                hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'MyReviewDetailList',             hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'CSInquiryMain',                  hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'CouponApplication',              hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ShoppingSearchHome',             hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ShoppingGateway',                hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'referrer',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'Referrer',                       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'login',                          hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ShoppingProductDetail',          hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'StoreShowCase',                  hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'FirstPurchaseBenefitBottomSheet',hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ShoppingCuratedProductListPage', hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'MyProfile',                      hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'CSInquiry',                      hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'AddressSearch',                  hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'ShoppingProductListPage',        hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'AppAction/MarketingOptIn',       hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'LightSpeed/DeliveryFeeInfo',     hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'Unknown',                        hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'WebLogging',                     hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'SaverDeliveryPopupInfo',         hasUrlParam: true },
+
+      { scheme: 'coupangeats', host: 'StoreDeliveryFee',               hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'OrderHistory',                   hasUrlParam: true },
+      { scheme: 'coupangeats', host: 'LightSpeed/OrderHistory',        hasUrlParam: true },
+    ];
+
+
+    const schemeInput = document.getElementById('target-scheme');
+    const paramInput = document.getElementById('target-param');
+    const urlInput = document.getElementById('target-url');
+    const encodeToggle = document.getElementById('encode-toggle');
+    const listEl = document.getElementById('link-list');
+
+    function buildUri(entry, scheme, param) {
+      if (!entry.hasUrlParam) {
+        return `${scheme}://${entry.host}`;
+      }
+      const raw = urlInput.value;
+      const value = encodeToggle.checked ? encodeURIComponent(raw) : raw;
+      return `${scheme}://${entry.host}?${param}=${value}`;
+    }
+
+    function render() {
+      listEl.innerHTML = '';
+      // Parameter 입력값이 있으면 사용, 비어 있으면 url
+      const param = paramInput.value.trim() || 'url';
+      const seen = new Set();
+      let idx = 0;
+      SCHEME_HOSTS.forEach((entry) => {
+        // Scheme 입력값이 있으면 모든 링크에 전역 적용, 비어 있으면 항목별 기본 스킴 사용
+        const scheme = schemeInput.value.trim() || entry.scheme;
+
+        // scheme + host 기준 중복 제거
+        const key = `${scheme}://${entry.host}`;
+        if (seen.has(key)) return;
+        seen.add(key);
+
+        const uri = buildUri(entry, scheme, param);
+
+        const btn = document.createElement('a');
+        btn.className = 'btn';
+        btn.href = uri;
+        btn.style.marginTop = idx === 0 ? '0' : '4px';
+        btn.textContent = `딥링크 실행 - ${scheme}://${entry.host}`;
+
+        const info = document.createElement('p');
+        info.className = 'target-line';
+        info.textContent = `target: ${uri}`;
+
+        listEl.appendChild(btn);
+        listEl.appendChild(info);
+        idx++;
+      });
+    }
+
+    schemeInput.addEventListener('input', render);
+    paramInput.addEventListener('input', render);
+    urlInput.addEventListener('input', render);
+    encodeToggle.addEventListener('change', render);
+    render();
+  </script>
 </body>
 </html>
